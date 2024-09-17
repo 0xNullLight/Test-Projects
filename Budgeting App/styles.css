@@ -1,89 +1,146 @@
-/* General Styling */
+/* Basic styles for the form and table */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
+  margin: 20px;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 .container {
-  width: 80%;
-  margin: auto;
-  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
   color: #333;
-  margin-top: 20px;
 }
 
-/* Form Styling */
-form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Consistent styles for inputs, selects, and buttons */
+input[type="date"],
+input[type="number"],
+select,
+#newCategory,
+button {
+  width: 25%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  height: 40px;
+  padding: 0 10px;
+}
+
+button {
+  background-color: gray;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: #2165d1;
+}
+
+.upload-csv,
+.sort-by,
+.controls {
   margin-bottom: 20px;
 }
 
-form label {
-  display: block;
-  margin-bottom: 8px;
-  color: #555;
+.table-container {
+  position: relative;
 }
 
-form input[type="text"], form input[type="number"], form select {
-  width: calc(100% - 22px);
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  height: 40px; /* Fixed height for consistency */
-  box-sizing: border-box; /* Ensure padding is included in the height */
+/* Grouped controls and sort-by section */
+.sort-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 20px;
 }
 
-form .d-none {
-  display: none;
+.sort-controls label {
+  margin-bottom: 5px;
 }
 
-/* Table Styling */
-table {
+#sortBy {
+  width: 100%;
+  max-width: 200px;
+  height: 40px;
+  margin-top: 10px;
+}
+
+#budgetTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
-table, th, td {
+#budgetTable th,
+#budgetTable td {
   border: 1px solid #ddd;
-}
-
-th, td {
-  padding: 12px;
+  padding: 10px;
   text-align: left;
 }
 
-th {
-  background-color: #007bff;
-  color: white;
+#budgetTable th {
+  background-color: #f2f2f2;
 }
 
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Checkbox Styling */
-.form-check-input {
-  margin-right: 10px;
-}
-
-/* Total Display */
 #totalDisplay {
-  font-size: 18px;
   font-weight: bold;
-  margin-top: 10px;
   text-align: right;
+  padding: 10px 0;
+}
+
+.d-none {
+  display: none;
+}
+
+.table th,
+.table td {
+  text-align: center;
+}
+
+/* Adjustments for select and button styles */
+#sortBy,
+#category {
+  background-color: white;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.controls label {
+  display: block;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#selectAll,
+#removeSelected {
+  width: auto;
+  margin-right: 10px;
 }

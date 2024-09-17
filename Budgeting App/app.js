@@ -1,199 +1,238 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const budgetForm = document.getElementById('budgetForm');
-    const dateInput = document.getElementById('date');
+    const form = document.getElementById('budgetForm');
     const categorySelect = document.getElementById('category');
     const newCategoryInput = document.getElementById('newCategory');
     const addCategoryBtn = document.getElementById('addCategoryBtn');
-    const amountInput = document.getElementById('amount');
-    const budgetTableBody = document.getElementById('budgetTable').querySelector('tbody');
-    const sortBySelect = document.getElementById('sortBy');
-    const removeSelectedButton = document.getElementById('removeSelected');
+    const tableBody = document.querySelector('#budgetTable tbody');
     const totalDisplay = document.getElementById('totalDisplay');
+    const sortBySelect = document.getElementById('sortBy');
+    const fileInput = document.getElementById('fileInput');
+    const uploadCSVBtn = document.getElementById('uploadCSV');
     const selectAllCheckbox = document.getElementById('selectAll');
-    let categories = [];
+    const removeSelectedBtn = document.getElementById('removeSelected');
 
-    // Initial setup: hide new category input and button
-    newCategoryInput.classList.add('d-none');
-    addCategoryBtn.classList.add('d-none');
+    // Load categories from local storage
+    function loadCategories() {
+        const categories = JSON.parse(localStorage.getItem('categories')) || [];
+        const selectedCategory = localStorage.getItem('selectedCategory') || '';
 
-    // Add event listener to form submission
-    budgetForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const dateValue = dateInput.value;
-        const categoryValue = categorySelect.value;
-        const amountValue = amountInput.value;
-
-        // Validate category
-        if (categoryValue === 'add') {
-            alert("Select or Add a new Category");
-            return;
-        }
-
-        // Check if all fields are filled out
-        if (dateValue && categoryValue && amountValue) {
-            addRow(dateValue, categoryValue, amountValue);
-            dateInput.value = '';
-            categorySelect.value = '';
-            amountInput.value = '';
-            updateTotal(); // Update the total after adding a new row
-        } else {
-            alert('Please fill out all fields.');
-        }
-    });
-
-    // Add event listener to category select change
-    categorySelect.addEventListener('change', () => {
-        if (categorySelect.value === 'add') {
-            newCategoryInput.classList.remove('d-none');
-            addCategoryBtn.classList.remove('d-none');
-        } else {
-            newCategoryInput.classList.add('d-none');
-            addCategoryBtn.classList.add('d-none');
-            newCategoryInput.value = ''; // Reset input field when not adding a new category
-        }
-    });
-
-    // Add event listener to add new category button
-    addCategoryBtn.addEventListener('click', () => {
-        const newCategory = newCategoryInput.value.trim();
-        if (newCategory) {
-            // Add new category to the list
-            if (!categories.includes(newCategory)) {
-                categories.push(newCategory);
-                updateCategorySelect();
-                // Reset the input and hide the new category input field
-                newCategoryInput.value = '';
-                newCategoryInput.classList.add('d-none');
-                addCategoryBtn.classList.add('d-none');
-            } else {
-                alert('This category already exists.');
-            }
-        } else {
-            alert('Please enter a category name.');
-        }
-    });
-
-    // Function to update category select options
-    function updateCategorySelect() {
-        categorySelect.innerHTML = `<option value="" disabled selected>Select Category</option>`;
+        // Populate category dropdown
+        categorySelect.innerHTML = `<option value="" ${selectedCategory === '' ? 'selected' : 'disabled'}>Select a category</option>`;
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
             option.textContent = cat;
             categorySelect.appendChild(option);
         });
-        // Always add the "Add New Category" option
-        const addOption = document.createElement('option');
-        addOption.value = 'add';
-        addOption.textContent = '+ Add New Category';
-        categorySelect.appendChild(addOption);
+        const addNewOption = document.createElement('option');
+        addNewOption.value = 'addNew';
+        addNewOption.textContent = 'Add a new category';
+        categorySelect.appendChild(addNewOption);
+        categorySelect.value = selectedCategory;
+
+        if (selectedCategory === 'addNew') {
+            newCategoryInput.classList.remove('d-none');
+            addCategoryBtn.classList.remove('d-none');
+        } else {
+            newCategoryInput.classList.add('d-none');
+            addCategoryBtn.classList.add('d-none');
+        }
     }
 
-    // Function to add a row to the table
-    function addRow(date, category, amount) {
-        const amountFloat = parseFloat(amount).toFixed(2);
+    // Save categories and selected value to local storage
+    function saveCategories() {
+        const options = Array.from(categorySelect.options);
+        const categories = options
+            .filter(option => option.value && option.value !== 'addNew')
+            .map(option => option.value);
+
+        localStorage.setItem('categories', JSON.stringify(categories));
+        localStorage.setItem('selectedCategory', categorySelect.value);
+    }
+
+    // Handle category selection
+    categorySelect.addEventListener('change', function() {
+        if (this.value === 'addNew') {
+            newCategoryInput.classList.remove('d-none');
+            addCategoryBtn.classList.remove('d-none');
+        } else {
+            newCategoryInput.classList.add('d-none');
+            addCategoryBtn.classList.add('d-none');
+        }
+        saveCategories();
+    });
+
+    // Add new category
+    addCategoryBtn.addEventListener('click', () => {
+        const newCategory = newCategoryInput.value.trim();
+
+        if (newCategory === '') {
+            alert('Please enter a new category.');
+            return;
+        }
+
+        // Check if the category already exists
+        if (Array.from(categorySelect.options).some(option => option.value === newCategory)) {
+            alert('Category already exists.');
+        } else {
+            // Add new category to dropdown
+            const newOption = document.createElement('option');
+            newOption.value = newCategory;
+            newOption.textContent = newCategory;
+            categorySelect.insertBefore(newOption, categorySelect.querySelector('#addNewOption'));
+            newCategoryInput.value = '';
+            newCategoryInput.classList.add('d-none');
+            addCategoryBtn.classList.add('d-none');
+            categorySelect.value = newCategory; // Set the new category as selected
+
+            saveCategories();
+        }
+    });
+
+    // Handle form submission (only affects the table)
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        const date = formatDate(document.getElementById('date').value);
+        const category = document.getElementById('category').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+
+        // Validation checks
+        if (category === '' || category === 'addNew') {
+            alert('Please select or add a category before submitting.');
+            return;
+        }
+
+        if (date === '' || isNaN(amount) || amount <= 0) {
+            alert('Please fill in all fields correctly.');
+            return;
+        }
+
+        // Create a new table row
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><input type="checkbox" class="row-select"></td>
+            <td><input type="checkbox" class="select-row"></td>
             <td>${date}</td>
             <td>${category}</td>
-            <td>$${amountFloat}</td>
+            <td>$${amount.toFixed(2)}</td>
         `;
-        budgetTableBody.appendChild(row);
+
+        // Append the new row to the table
+        tableBody.appendChild(row);
+
+        // Clear form fields
+        form.reset();
+        categorySelect.value = ''; // Reset category to the default option
+        newCategoryInput.classList.add('d-none'); // Hide new category input
+        addCategoryBtn.classList.add('d-none'); // Hide add category button
+
+        // Add event listener to the new checkbox
+        row.querySelector('.select-row').addEventListener('change', updateTotal);
+    });
+
+    // Function to format dates to YYYY-MM-DD
+    function formatDate(date) {
+        const [year, month, day] = date.split('-');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
 
-    // Function to update the total amount display based on selected rows
+    // Function to update the total amount based on selected rows
     function updateTotal() {
         let total = 0;
-        const selectedCheckboxes = budgetTableBody.querySelectorAll('tr .row-select:checked');
-        if (selectedCheckboxes.length > 0) {
-            selectedCheckboxes.forEach(checkbox => {
-                const row = checkbox.closest('tr');
-                const amountText = row.cells[3].textContent;
-                const amount = parseFloat(amountText.replace('$', ''));
-                total += amount;
-            });
-        } else {
-            total = 0; // Set to zero or choose another way to handle no selection
-        }
+        document.querySelectorAll('#budgetTable tbody .select-row:checked').forEach(checkbox => {
+            const amountCell = checkbox.closest('tr').querySelector('td:nth-child(4)');
+            total += parseFloat(amountCell.textContent.replace('$', ''));
+        });
         totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
     }
 
-    // Add event listener to remove selected rows
-    removeSelectedButton.addEventListener('click', () => {
-        const rows = budgetTableBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const checkbox = row.querySelector('.row-select');
-            if (checkbox.checked) {
-                row.remove();
-            }
-        });
-        updateTotal(); // Update the total after removing rows
+    // Handle CSV upload
+    uploadCSVBtn.addEventListener('click', () => {
+        fileInput.click();
     });
 
-    // Add event listener to "Select All" checkbox
-    selectAllCheckbox.addEventListener('change', (e) => {
-        const isChecked = e.target.checked;
-        const checkboxes = budgetTableBody.querySelectorAll('.row-select');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-        });
-        updateTotal(); // Update total when "Select All" is toggled
-    });
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file && file.type === 'text/csv') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const rows = e.target.result.split('\n').slice(1);
+                rows.forEach(row => {
+                    const [date, category, amount] = row.split(',');
+                    if (date && category && amount) {
+                        const formattedDate = formatDate(date);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><input type="checkbox" class="select-row"></td>
+                            <td>${formattedDate}</td>
+                            <td>${category}</td>
+                            <td>$${parseFloat(amount).toFixed(2)}</td>
+                        `;
+                        tableBody.appendChild(row);
 
-    // Add event listener to individual row checkboxes
-    budgetTableBody.addEventListener('change', (e) => {
-        if (e.target.classList.contains('row-select')) {
-            updateTotal(); // Update total when an individual checkbox is toggled
+                        // Add event listener to the new checkbox
+                        row.querySelector('.select-row').addEventListener('change', updateTotal);
+                    }
+                });
+
+                // Update total after adding new rows
+                updateTotal();
+            };
+            reader.readAsText(file);
+        } else {
+            alert('Please upload a valid CSV file.');
         }
     });
 
-    // Add event listener to sort by select
-    sortBySelect.addEventListener('change', () => {
-        const sortBy = sortBySelect.value;
-        const rows = Array.from(budgetTableBody.querySelectorAll('tr'));
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+        document.querySelectorAll('#budgetTable tbody .select-row').forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        // Update total based on new selection
+        updateTotal();
+    });
 
-        rows.sort((a, b) => {
-            const aValue = a.cells[sortBy === 'date' ? 1 : sortBy === 'category' ? 2 : 3].textContent;
-            const bValue = b.cells[sortBy === 'date' ? 1 : sortBy === 'category' ? 2 : 3].textContent;
+    // Handle sort by change
+    sortBySelect.addEventListener('change', function() {
+        const rowsArray = Array.from(tableBody.querySelectorAll('tr'));
+        const sortBy = this.value;
 
-            if (sortBy === 'amount') {
-                return parseFloat(aValue.replace('$', '')) - parseFloat(bValue.replace('$', ''));
+        rowsArray.sort((a, b) => {
+            const cellA = a.querySelector(`td:nth-child(${sortBy === 'date' ? 2 : sortBy === 'category' ? 3 : 4})`).textContent;
+            const cellB = b.querySelector(`td:nth-child(${sortBy === 'date' ? 2 : sortBy === 'category' ? 3 : 4})`).textContent;
+
+            if (sortBy === 'date') {
+                return new Date(cellA) - new Date(cellB);
+            } else if (sortBy === 'amount') {
+                return parseFloat(cellA.replace('$', '')) - parseFloat(cellB.replace('$', ''));
             } else {
-                return aValue.localeCompare(bValue);
+                return cellA.localeCompare(cellB);
             }
         });
 
-        // Clear table and re-add rows in sorted order
-        budgetTableBody.innerHTML = '';
-        rows.forEach(row => {
-            budgetTableBody.appendChild(row);
-        });
-        updateTotal(); // Ensure total is updated after sorting
+        tableBody.innerHTML = '';
+        rowsArray.forEach(row => tableBody.appendChild(row));
+
+        // Update total
+        updateTotal();
     });
 
-    // Add event listener to download CSV button
-    document.getElementById('downloadCsv').addEventListener('click', () => {
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "Date,Category,Amount\n";
+    // Handle remove selected button
+    removeSelectedBtn.addEventListener('click', () => {
+        const selectedCheckboxes = document.querySelectorAll('#budgetTable tbody .select-row:checked');
 
-        const rows = budgetTableBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const date = row.cells[1].textContent;
-            const category = row.cells[2].textContent;
-            const amount = row.cells[3].textContent;
-            csvContent += `${date},${category},${amount.replace('$', '')}\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'budget.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        if (selectedCheckboxes.length === 0) {
+            alert('No items selected to remove.');
+        } else {
+            selectedCheckboxes.forEach(checkbox => {
+                checkbox.closest('tr').remove();
+            });
+            // Update total
+            updateTotal();
+        }
     });
 
-    // Initialize the category select menu
-    updateCategorySelect(); // Ensure categories are added to the select menu on page load
+    // Initialize the app
+    loadCategories();
 });
