@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- Specifies character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures mobile responsiveness -->
+    <title>Budget Tracker</title> <!-- Sets the title of the page -->
+    <link rel="stylesheet" type="text/css" href="./assets/css/reset.css"> <!-- Links to CSS reset file -->
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css"> <!-- Links to custom CSS file -->
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Navigation content will go here -->
+        </nav>    
+    </header>
+    <main>
+        <div id="Budget_Tracker">
+            <!-- Budget form -->
+            <form action="#" method="post">
+                <!-- Date input field -->
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                
+                <!-- Category dropdown -->
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled>Select a category</option>
+                    <option value="addNew">+ Add a new category</option>
+                </select>
+                
+                <!-- Amount input field -->
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" step="0.01" required>
+                
+                <!-- Submit buttons -->
+                <button id="add_entry" type="submit">Add Entry</button>
+                <button id="upload_csv" type="submit">Upload CSV</button>
+            </form>
+
+            <!-- Budget table with sorting options -->
+            <div id="budgetTable">
+                <label for="sortBy">Sort By:
+                <select id="sortBy" name="sortBy">
+                    <option value="date">Date</option>
+                    <option value="category">Category</option>
+                    <option value="amount">Amount</option>
+                </select>
+                </label>
+                <table id="tableBudget">
+                    <thead>
+                        <tr>
+                            <th><input id="select-all-checkbox" type="checkbox" class="item"> Select</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Display total -->
+            <div id="totalDisplay">
+                <p>Total: <span id="totalAmount">$0.00</span></p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Budget Tracker</p> <!-- Footer content -->
+    </footer>
+
+    <script src="./assets/js/index.js"></script> <!-- Links to JavaScript file -->
+</body>
+</html>

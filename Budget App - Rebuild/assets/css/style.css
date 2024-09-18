@@ -1,0 +1,163 @@
+/* Main content adjustments */
+main {
+    padding-top: 70px; /* Adds space at the top of the main content to prevent overlap with the fixed header */
+    padding-bottom: 70px; /* Adds space at the bottom of the main content to prevent overlap with the fixed footer */
+}
+
+/* General body styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Sets a modern sans-serif font */
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
+    background-color: #f5f5f5; /* Sets a light gray background for the entire page */
+    color: #333; /* Sets text color to dark gray */
+}
+
+/* Header styling */
+header {
+    width: 100%; /* Makes the header span the full width of the page */
+    border-bottom: 1px solid #ddd; /* Adds a light gray border at the bottom of the header */
+    background-color: #292b2c; /* Dark background for a modern look */
+    color: #fff; /* White text color */
+    font-size: 14px; /* Sets font size */
+    display: flex; /* Flexbox to align header content */
+    justify-content: space-between; /* Distributes space evenly between elements */
+    align-items: center; /* Centers content vertically */
+    position: fixed; /* Keeps header fixed at the top of the page */
+    top: 0; /* Sticks header to the top */
+    left: 0; /* Aligns header with the left edge */
+    padding: 10px 20px; /* Adds padding for a clean look */
+}
+
+/* Navigation menu styling */
+nav ul {
+    display: flex; /* Displays list items in a row */
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
+    list-style: none; /* Removes bullets from list items */
+}
+
+nav li {
+    margin-left: 15px; /* Adds spacing between list items */
+}
+
+nav li a {
+    color: #fff; /* White link text */
+    text-align: center; /* Centers text inside the link */
+    padding: 8px 12px; /* Adds padding to links */
+    text-decoration: none; /* Removes underline from links */
+    border-radius: 4px; /* Rounds link corners */
+    font-size: 13px; /* Sets font size */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+nav li a:hover {
+    background-color: #444; /* Changes background color when hovering over links */
+}
+
+/* Budget Form section styling */
+
+/* Style the form container */
+#Budget_Tracker {
+    max-width: 700px; /* Limits form width for better readability */
+    margin: 0 auto; /* Centers the form on the page */
+    padding: 10px; /* Adds padding inside the form container */
+    padding-bottom: .5%; /* Adds padding at the bottom */
+    background-color: #fff; /* White background for the form */
+    border-radius: 8px; /* Rounds the corners of the form */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
+}
+
+/* Style form labels */
+label {
+    display: block; /* Displays labels on a new line */
+    margin-top: 8px; /* Adds space above labels */
+    margin-bottom: 4px; /* Adds space below labels */
+    font-weight: 600; /* Makes labels bold */
+    font-size: 13px; /* Sets font size */
+}
+
+/* Style form inputs */
+input[type="date"],
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%; /* Makes inputs take full width of the container */
+    padding: 8px; /* Adds padding inside the inputs */
+    border: 1px solid #ccc; /* Adds a border to the inputs */
+    border-radius: 4px; /* Rounds input corners */
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+    font-size: 13px; /* Sets font size */
+}
+
+/* Style the submit button */
+button {
+    background-color: #007bff; /* Blue background for the button */
+    color: #fff; /* White text color */
+    border: none; /* Removes default border */
+    padding: 6px 12px; /* Adds padding inside the button */
+    border-radius: 4px; /* Rounds button corners */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    font-size: 13px; /* Sets font size */
+    margin-right: 8px; /* Adds space between buttons */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darkens button background on hover */
+}
+
+/* Style the sort dropdown */
+select {
+    padding: 8px; /* Adds padding inside the dropdown */
+    font-size: 13px; /* Sets font size */
+}
+
+/* Style the select-all checkbox */
+#select-all-checkbox {
+    width: 10px; /* Custom checkbox width */
+    height: 10px; /* Custom checkbox height */
+}
+
+/* Styling for the Budget Table section */
+#budgetTable {
+    width: 100%; /* Makes the budget table full width */
+    border-collapse: collapse; /* Removes space between table borders */
+}
+
+#tableBudget {
+    width: 100%; /* Makes the budget table full width */
+    border-collapse: collapse; /* Removes space between table borders */
+}
+
+#tableBudget th, td {
+    border: 1px solid #ddd; /* Adds a light border around cells */
+    padding: 2px; /* Adds padding inside table cells */
+    background-color: #fafafa; /* Light gray background for table rows */
+    font-size: x-small; /* Small font size for table text */
+}
+
+#tableBudget th {
+    background-color: #f2f2f2; /* Slightly darker background for table headers */
+}
+
+/* Total display styling */
+#totalDisplay {
+    display: flex; /* Flexbox to align the content */
+    justify-content: end; /* Aligns the total amount to the right */
+    padding-top: 1%; /* Adds space above the total display */
+    font-size: small; /* Sets font size */
+}
+
+/* Footer styling */
+footer {
+    background-color: #292b2c; /* Matches the header background color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Adds padding inside the footer */
+    border-top: 1px solid #ddd; /* Adds a light border at the top of the footer */
+    position: fixed; /* Fixes footer at the bottom of the page */
+    bottom: 0; /* Aligns footer to the bottom */
+    width: 100%; /* Makes footer span the full width */
+    text-align: center; /* Centers footer text */
+    font-size: 13px; /* Sets font size */
+}
